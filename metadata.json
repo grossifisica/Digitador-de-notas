@@ -1,0 +1,6 @@
+{
+  "name": "Digitador Automático de Notas",
+  "description": "Aplicativo para automatizar a digitação de notas com delays configuráveis, saltos de TAB e execução em segundo plano.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
