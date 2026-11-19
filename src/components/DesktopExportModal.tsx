@@ -158,7 +158,7 @@ export const DesktopExportModal: React.FC<DesktopExportModalProps> = ({
 
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <p className="text-xs text-slate-300">
-                  Script pronto com suas <strong>{grades.filter(g => g.grade.trim() !== '').length} notas</strong>, delay de {settings.initialDelay}s e {settings.tabCount}x TAB.
+                  Script pronto com <strong>{grades.length} linhas</strong> ({grades.filter(g => g.grade.trim() !== '').length} notas preenchidas), delay de {settings.initialDelay}s e {settings.tabCount}x TAB.
                 </p>
                 <div className="flex items-center gap-2">
                   <button

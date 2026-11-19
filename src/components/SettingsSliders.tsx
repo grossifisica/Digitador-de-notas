@@ -79,16 +79,16 @@ export const SettingsSliders: React.FC<SettingsSlidersProps> = ({
             <input
               id="typing-interval-slider"
               type="range"
-              min="0.2"
+              min="0.1"
               max="3"
-              step="0.2"
+              step="0.1"
               disabled={disabled}
               value={settings.typingInterval}
               onChange={(e) => onChange({ typingInterval: parseFloat(Number(e.target.value).toFixed(1)) })}
               className="w-full accent-indigo-500 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed h-2 bg-slate-800 rounded-lg"
             />
             <div className="flex justify-between text-[11px] text-slate-500 mt-1 font-mono">
-              <span>0.2s</span>
+              <span>0.1s</span>
               <span className="text-indigo-400/80 font-semibold">Padrão: 2.0s</span>
               <span>3.0s</span>
             </div>

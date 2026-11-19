@@ -21,19 +21,30 @@ export const PasteModal: React.FC<PasteModalProps> = ({
   const handleProcess = () => {
     if (!rawText.trim()) return;
 
-    const lines = rawText.split(/\r?\n/).map((l) => l.trim()).filter((l) => l.length > 0);
+    // Remove at most one trailing newline (typical when copying from Excel/Calc) while keeping internal/explicit empty lines
+    const normalizedText = rawText.replace(/\r?\n$/, '');
+    const lines = normalizedText.split(/\r?\n/).map((l) => l.trim());
     const parsedItems: GradeItem[] = [];
 
     lines.forEach((line, index) => {
-      // Check if line contains tabs or semicolons or commas separating Name and Grade
+      if (line.length === 0) {
+        parsedItems.push({
+          id: `grade-${Date.now()}-${index}-${Math.random().toString(36).substring(2, 6)}`,
+          student: '',
+          grade: '',
+          status: 'pending',
+        });
+        return;
+      }
+
+      // Check if line contains tabs or semicolons separating Name and Grade
       const parts = line.split(/[\t;]/).map((p) => p.trim());
 
       let student = `Aluno ${index + 1}`;
       let grade = '';
 
       if (parts.length >= 2) {
-        // e.g. "João Silva \t 8.5"
-        // Check which part looks more like a number
+        // e.g. "João Silva \t 8.5" or "João Silva \t "
         const isPart0Number = /^[\d.,]+$/.test(parts[0]);
         const isPart1Number = /^[\d.,]+$/.test(parts[1]);
 
@@ -110,14 +121,14 @@ export const PasteModal: React.FC<PasteModalProps> = ({
               <span>Substituir notas atuais (se desmarcado, adicionará ao final)</span>
             </label>
             <span className="text-slate-500 font-mono">
-              {rawText.split(/\r?\n/).filter((l) => l.trim().length > 0).length} linhas detectadas
+              {rawText.trim() ? rawText.replace(/\r?\n$/, '').split(/\r?\n/).length : 0} linhas detectadas
             </span>
           </div>
 
           <div className="bg-indigo-500/10 border border-indigo-500/20 p-3 rounded-xl flex items-start gap-2.5 text-xs text-indigo-300">
             <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-indigo-400" />
             <span>
-              Aceita vírgula ou ponto (ex: 8,5 ou 8.5). Cada linha se transformará em um registro na tabela.
+              Aceita vírgula ou ponto (ex: 8,5 ou 8.5). Linhas vazias serão mantidas na tabela com nota vazia.
             </span>
           </div>
         </div>

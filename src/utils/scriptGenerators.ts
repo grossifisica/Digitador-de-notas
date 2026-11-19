@@ -4,10 +4,9 @@ import { GradeItem, AutomationSettings } from '../types';
  * Generates an executable Bash script (.sh) for Linux (Ubuntu, Linux Mint, Debian, Fedora, Arch, etc.)
  */
 export function generateLinuxBashScript(grades: GradeItem[], settings: AutomationSettings): string {
-  const activeGrades = grades.filter((g) => g.grade.trim() !== '');
   const tabCount = Math.max(1, Math.min(20, settings.tabCount));
-  const gradesList = activeGrades.map((g) => `  "${g.grade.trim().replace(/"/g, '\\"')}"`).join('\n');
-  const studentsList = activeGrades.map((g) => `  "${(g.student || 'Aluno').replace(/"/g, '\\"')}"`).join('\n');
+  const gradesList = grades.map((g) => `  "${g.grade.trim().replace(/"/g, '\\"')}"`).join('\n');
+  const studentsList = grades.map((g, i) => `  "${(g.student || `Aluno ${i + 1}`).replace(/"/g, '\\"')}"`).join('\n');
 
   return `#!/usr/bin/env bash
 # ==============================================================
@@ -33,7 +32,7 @@ TOTAL=\${#NOTAS[@]}
 echo "=========================================================="
 echo "      DIGITADOR AUTOMÁTICO DE NOTAS PARA LINUX"
 echo "=========================================================="
-echo "Total de notas: $TOTAL"
+echo "Total de linhas: $TOTAL"
 echo "Delay inicial: \${DELAY_INICIAL}s | Intervalo: \${INTERVALO}s | TABs: \${QTD_TABS}x"
 echo "=========================================================="
 
@@ -99,17 +98,21 @@ for i in "\${!NOTAS[@]}"; do
   NOTA="\${NOTAS[$i]}"
   ALUNO="\${ALUNOS[$i]}"
   IDX=$((i + 1))
-  
-  echo "[$IDX/$TOTAL] Aluno: $ALUNO | Nota: $NOTA"
-  copiar_nota "$NOTA"
-  sleep 0.05
-  apertar_ctrl_v
+
+  if [ -z "$NOTA" ]; then
+    echo "[$IDX/$TOTAL] Aluno: $ALUNO | Nota: (vazio)"
+  else
+    echo "[$IDX/$TOTAL] Aluno: $ALUNO | Nota: $NOTA"
+    copiar_nota "$NOTA"
+    sleep 0.05
+    apertar_ctrl_v
+  fi
   sleep "$INTERVALO"
   apertar_tab "$QTD_TABS"
 done
 
 echo ""
-echo "🎉 Concluído com sucesso! Todas as $TOTAL notas foram digitadas."
+echo "🎉 Concluído com sucesso! Todas as $TOTAL linhas foram processadas."
 printf "\\a"
 `;
 }
@@ -118,7 +121,6 @@ printf "\\a"
  * Generates Windows VBScript (.vbs) - 2 clicks, native, zero installation!
  */
 export function generateWindowsVbsScript(grades: GradeItem[], settings: AutomationSettings): string {
-  const activeGrades = grades.filter((g) => g.grade.trim() !== '');
   const tabCount = Math.max(1, Math.min(20, settings.tabCount));
   const initialDelayMs = Math.round(settings.initialDelay * 1000);
   const intervalMs = Math.round(settings.typingInterval * 1000);
@@ -128,7 +130,7 @@ Dim WshShell, btn
 Set WshShell = CreateObject("WScript.Shell")
 
 btn = MsgBox("DIGITADOR DE NOTAS" & vbCrLf & vbCrLf & _
-  "Total de notas: ${activeGrades.length}" & vbCrLf & _
+  "Total de linhas: ${grades.length}" & vbCrLf & _
   "Delay inicial: ${settings.initialDelay}s" & vbCrLf & _
   "Intervalo: ${settings.typingInterval}s | TABs: ${tabCount}x" & vbCrLf & vbCrLf & _
   "Clique em OK e selecione o primeiro campo do seu sistema em ate ${settings.initialDelay} segundos!", 65, "Digitador de Notas")
@@ -139,13 +141,18 @@ WScript.Sleep ${initialDelayMs}
 
 `;
 
-  activeGrades.forEach((item, index) => {
+  grades.forEach((item, index) => {
     const cleanGrade = item.grade.trim();
-    script += `' [${index + 1}/${activeGrades.length}] Nota: ${cleanGrade}\n`;
-    script += `WshShell.Run "cmd.exe /c <nul set /p=""${cleanGrade}"" | clip", 0, True\n`;
-    script += `WScript.Sleep 50\n`;
-    script += `WshShell.SendKeys "^v"\n`;
-    script += `WScript.Sleep ${intervalMs}\n`;
+    if (cleanGrade === '') {
+      script += `' [${index + 1}/${grades.length}] Nota: (vazio)\n`;
+      script += `WScript.Sleep ${intervalMs}\n`;
+    } else {
+      script += `' [${index + 1}/${grades.length}] Nota: ${cleanGrade}\n`;
+      script += `WshShell.Run "cmd.exe /c <nul set /p=""${cleanGrade}"" | clip", 0, True\n`;
+      script += `WScript.Sleep 50\n`;
+      script += `WshShell.SendKeys "^v"\n`;
+      script += `WScript.Sleep ${intervalMs}\n`;
+    }
     for (let t = 0; t < tabCount; t++) {
       script += `WshShell.SendKeys "{TAB}"\n`;
       script += `WScript.Sleep 60\n`;
@@ -153,7 +160,7 @@ WScript.Sleep ${initialDelayMs}
     script += `\n`;
   });
 
-  script += `MsgBox "Sucesso! Todas as ${activeGrades.length} notas foram digitadas no teclado!", 64, "Concluido"\n`;
+  script += `MsgBox "Sucesso! Todas as ${grades.length} linhas foram processadas no teclado!", 64, "Concluido"\n`;
   return script;
 }
 
@@ -161,9 +168,8 @@ WScript.Sleep ${initialDelayMs}
  * Generates Windows Batch Script (.bat)
  */
 export function generateWindowsBatchScript(grades: GradeItem[], settings: AutomationSettings): string {
-  const activeGrades = grades.filter((g) => g.grade.trim() !== '');
   const tabCount = Math.max(1, Math.min(20, settings.tabCount));
-  const notesList = activeGrades.map((g) => `"${g.grade.trim().replace(/"/g, '`"')}"`).join(', ');
+  const notesList = grades.map((g) => `"${g.grade.trim().replace(/"/g, '`"')}"`).join(', ');
 
   return `@echo off
 chcp 65001 >nul
@@ -171,13 +177,13 @@ title Digitador Automatico de Notas
 color 0B
 echo ========================================================
 echo DIGITADOR DE NOTAS - WINDOWS
-echo Total de notas: ${activeGrades.length}
+echo Total de linhas: ${grades.length}
 echo Delay Inicial: ${settings.initialDelay}s | Intervalo: ${settings.typingInterval}s | TABs: ${tabCount}x
 echo ========================================================
 echo Pressione qualquer tecla e clique no primeiro campo de notas!
 pause >nul
 
-powershell -NoProfile -ExecutionPolicy Bypass -Command "& { Add-Type -AssemblyName System.Windows.Forms; Write-Host 'Iniciando em ${settings.initialDelay}s...' -ForegroundColor Yellow; Start-Sleep -Seconds ${settings.initialDelay}; $notas = @(${notesList}); foreach ($nota in $notas) { [System.Windows.Forms.Clipboard]::SetText($nota); [System.Windows.Forms.SendKeys]::SendWait('^v'); Start-Sleep -Milliseconds ${Math.round(settings.typingInterval * 1000)}; for ($t = 0; $t -lt ${tabCount}; $t++) { [System.Windows.Forms.SendKeys]::SendWait('{TAB}'); Start-Sleep -Milliseconds 60; } } Write-Host 'Concluido!' -ForegroundColor Green; }"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "& { Add-Type -AssemblyName System.Windows.Forms; Write-Host 'Iniciando em ${settings.initialDelay}s...' -ForegroundColor Yellow; Start-Sleep -Seconds ${settings.initialDelay}; $notas = @(${notesList}); foreach ($nota in $notas) { if (-not [string]::IsNullOrEmpty($nota)) { [System.Windows.Forms.Clipboard]::SetText($nota); [System.Windows.Forms.SendKeys]::SendWait('^v'); } Start-Sleep -Milliseconds ${Math.round(settings.typingInterval * 1000)}; for ($t = 0; $t -lt ${tabCount}; $t++) { [System.Windows.Forms.SendKeys]::SendWait('{TAB}'); Start-Sleep -Milliseconds 60; } } Write-Host 'Concluido!' -ForegroundColor Green; }"
 pause >nul
 `;
 }
@@ -186,9 +192,8 @@ pause >nul
  * Generates Python script using pyautogui
  */
 export function generatePythonScript(grades: GradeItem[], settings: AutomationSettings): string {
-  const activeGrades = grades.filter((g) => g.grade.trim() !== '');
   const tabCount = Math.max(1, Math.min(20, settings.tabCount));
-  const gradesArrayStr = JSON.stringify(activeGrades.map((g) => g.grade.trim()), null, 2);
+  const gradesArrayStr = JSON.stringify(grades.map((g) => g.grade.trim()), null, 2);
 
   return `#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
@@ -208,7 +213,7 @@ NOTAS = ${gradesArrayStr}
 def main():
     print("=" * 60)
     print("DIGITADOR FÍSICO DE TECLAS (CONTROL+V E TAB)")
-    print(f"Total de notas: {len(NOTAS)}")
+    print(f"Total de linhas: {len(NOTAS)}")
     print(f"Iniciando em {DELAY_INICIAL}s... Clique no campo do seu sistema!")
     print("Pressione Ctrl+C para cancelar.")
     print("=" * 60)
@@ -216,9 +221,12 @@ def main():
     time.sleep(DELAY_INICIAL)
     
     for idx, nota in enumerate(NOTAS, start=1):
-        print(f"[{idx}/{len(NOTAS)}] Apertando CONTROL+V: {nota}")
-        pyperclip.copy(nota)
-        pyautogui.hotkey('ctrl', 'v')
+        if nota == "":
+            print(f"[{idx}/{len(NOTAS)}] Nota: (vazio)")
+        else:
+            print(f"[{idx}/{len(NOTAS)}] Apertando CONTROL+V: {nota}")
+            pyperclip.copy(nota)
+            pyautogui.hotkey('ctrl', 'v')
         time.sleep(INTERVALO_DIGITACAO)
         
         for _ in range(QUANTIDADE_TABS):
@@ -236,9 +244,8 @@ if __name__ == "__main__":
  * Generates an in-browser Bookmarklet snippet
  */
 export function generateBookmarkletCode(grades: GradeItem[], settings: AutomationSettings): string {
-  const activeGrades = grades.filter((g) => g.grade.trim() !== '');
   const tabCount = Math.max(1, Math.min(20, settings.tabCount));
-  const gradesJson = JSON.stringify(activeGrades.map((g) => g.grade.trim()));
+  const gradesJson = JSON.stringify(grades.map((g) => g.grade.trim()));
 
   return `javascript:(function(){
   const notas = ${gradesJson};
@@ -246,7 +253,7 @@ export function generateBookmarkletCode(grades: GradeItem[], settings: Automatio
   const intervalo = ${settings.typingInterval} * 1000;
   const tabCount = ${tabCount};
   
-  if (!notas.length) { alert('Nenhuma nota para digitar!'); return; }
+  if (!notas.length) { alert('Nenhuma linha para processar!'); return; }
   
   const box = document.createElement('div');
   box.style.position = 'fixed';
@@ -268,7 +275,7 @@ export function generateBookmarkletCode(grades: GradeItem[], settings: Automatio
     let idx = 0;
     function typeNext() {
       if (idx >= notas.length) {
-        box.innerHTML = 'Concluído! ' + notas.length + ' notas digitadas com sucesso.';
+        box.innerHTML = 'Concluído! ' + notas.length + ' linhas processadas com sucesso.';
         box.style.color = '#4ade80';
         setTimeout(() => box.remove(), 4000);
         return;
@@ -276,7 +283,7 @@ export function generateBookmarkletCode(grades: GradeItem[], settings: Automatio
       
       const el = document.activeElement;
       const nota = notas[idx];
-      box.innerHTML = '[' + (idx + 1) + '/' + notas.length + '] Digitando nota: ' + nota;
+      box.innerHTML = '[' + (idx + 1) + '/' + notas.length + '] ' + (nota === '' ? 'Nota vazia' : 'Digitando nota: ' + nota);
       
       if (el && ('value' in el)) {
         el.value = nota;

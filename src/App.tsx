@@ -161,7 +161,7 @@ export default function App() {
             </div>
 
             <div className="text-xs font-mono px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-300">
-              {activeGrades.length} {activeGrades.length === 1 ? 'nota configurada' : 'notas configuradas'}
+              {grades.length} {grades.length === 1 ? 'linha' : 'linhas'} ({activeGrades.length} {activeGrades.length === 1 ? 'nota' : 'notas'})
             </div>
           </div>
 
@@ -186,7 +186,7 @@ export default function App() {
                 <button
                   type="button"
                   onClick={handleDownloadLinuxBash}
-                  disabled={activeGrades.length === 0}
+                  disabled={grades.length === 0}
                   className="w-full px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-md shadow-emerald-600/30 transition-all hover:scale-[1.01] disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   <Download className="w-4 h-4" />
@@ -227,7 +227,7 @@ export default function App() {
                 <button
                   type="button"
                   onClick={handleDownloadWindowsVbs}
-                  disabled={activeGrades.length === 0}
+                  disabled={grades.length === 0}
                   className="px-3 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-md shadow-sky-600/30 transition-all hover:scale-[1.01] disabled:opacity-40 disabled:cursor-not-allowed"
                   title="Executável silencioso com 2 cliques nativo do Windows"
                 >
@@ -238,7 +238,7 @@ export default function App() {
                 <button
                   type="button"
                   onClick={handleDownloadWindowsBatch}
-                  disabled={activeGrades.length === 0}
+                  disabled={grades.length === 0}
                   className="px-3 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold flex items-center justify-center gap-1.5 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                   title="Arquivo Batch para Windows"
                 >
@@ -256,7 +256,7 @@ export default function App() {
               <button
                 type="button"
                 onClick={handleDownloadPython}
-                disabled={activeGrades.length === 0}
+                disabled={grades.length === 0}
                 className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 font-medium flex items-center gap-1.5 transition-colors disabled:opacity-40"
               >
                 <Terminal className="w-3.5 h-3.5 text-amber-400" />
@@ -266,7 +266,7 @@ export default function App() {
               <button
                 type="button"
                 onClick={handleCopyBookmarklet}
-                disabled={activeGrades.length === 0}
+                disabled={grades.length === 0}
                 className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 font-medium flex items-center gap-1.5 transition-colors disabled:opacity-40"
                 title="Copiar código para colar no console do seu portal escolar ou salvar nos favoritos"
               >

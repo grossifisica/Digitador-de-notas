@@ -241,7 +241,7 @@ export const GradeTable: React.FC<GradeTableProps> = ({
 
           <div className="flex items-center gap-2 text-slate-400 text-xs">
             <HelpCircle className="w-4 h-4 text-indigo-400" />
-            <span>O script digitará <strong>exclusivamente os valores da coluna de Notas</strong>. Os nomes ficam visíveis para sua conferência.</span>
+            <span>O script digitará <strong>exclusivamente os valores da coluna de Notas</strong> (linhas vazias mantêm a nota vazia e avançam com TAB).</span>
           </div>
         </div>
       )}
