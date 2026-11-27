@@ -167,30 +167,6 @@ WScript.Sleep ${initialDelayMs}
 }
 
 /**
- * Generates Windows Batch Script (.bat)
- */
-export function generateWindowsBatchScript(grades: GradeItem[], settings: AutomationSettings): string {
-  const tabCount = Math.max(1, Math.min(20, settings.tabCount));
-  const notesList = grades.map((g) => `"${g.grade.trim().replace(/"/g, '`"')}"`).join(', ');
-
-  return `@echo off
-chcp 65001 >nul
-title Digitador Automatico de Notas
-color 0B
-echo ========================================================
-echo DIGITADOR DE NOTAS - WINDOWS
-echo Total de linhas: ${grades.length}
-echo Delay Inicial: ${settings.initialDelay}s | Intervalo: ${settings.typingInterval}s | TABs: ${tabCount}x
-echo ========================================================
-set /p "_confirm=Tecle ENTER para comecar a digitar..."
-echo Clique no primeiro campo de notas agora!
-
-powershell -NoProfile -ExecutionPolicy Bypass -Command "& { Add-Type -AssemblyName System.Windows.Forms; Write-Host 'Iniciando em ${settings.initialDelay}s...' -ForegroundColor Yellow; Start-Sleep -Seconds ${settings.initialDelay}; $notas = @(${notesList}); foreach ($nota in $notas) { if (-not [string]::IsNullOrEmpty($nota)) { [System.Windows.Forms.Clipboard]::SetText($nota); [System.Windows.Forms.SendKeys]::SendWait('^v'); } Start-Sleep -Milliseconds ${Math.round(settings.typingInterval * 1000)}; for ($t = 0; $t -lt ${tabCount}; $t++) { [System.Windows.Forms.SendKeys]::SendWait('{TAB}'); Start-Sleep -Milliseconds 60; } } Write-Host 'Concluido!' -ForegroundColor Green; }"
-pause >nul
-`;
-}
-
-/**
  * Generates Python script using pyautogui
  */
 export function generatePythonScript(grades: GradeItem[], settings: AutomationSettings): string {

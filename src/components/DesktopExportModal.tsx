@@ -13,7 +13,7 @@ import { GradeItem, AutomationSettings } from '../types';
 import { 
   generateLinuxBashScript,
   generatePythonScript, 
-  generateWindowsBatchScript,
+  generateWindowsVbsScript,
   downloadFile 
 } from '../utils/scriptGenerators';
 
@@ -37,7 +37,7 @@ export const DesktopExportModal: React.FC<DesktopExportModalProps> = ({
 
   const linuxCode = generateLinuxBashScript(grades, settings);
   const pythonCode = generatePythonScript(grades, settings);
-  const windowsCode = generateWindowsBatchScript(grades, settings);
+  const windowsCode = generateWindowsVbsScript(grades, settings);
 
   const handleCopy = (text: string, type: string) => {
     navigator.clipboard.writeText(text);
@@ -54,7 +54,7 @@ export const DesktopExportModal: React.FC<DesktopExportModalProps> = ({
   };
 
   const handleDownloadWindows = () => {
-    downloadFile(windowsCode, `digitar_notas_windows.bat`, 'text/plain;charset=utf-8');
+    downloadFile(windowsCode, `digitar_notas_windows.vbs`, 'text/plain;charset=utf-8');
   };
 
   return (
@@ -136,7 +136,7 @@ export const DesktopExportModal: React.FC<DesktopExportModalProps> = ({
                 : 'text-slate-500 border-transparent hover:text-slate-400'
             }`}
           >
-            <span>Windows (.bat)</span>
+            <span>Windows (.vbs)</span>
           </button>
         </div>
 
@@ -271,15 +271,15 @@ export const DesktopExportModal: React.FC<DesktopExportModalProps> = ({
             <div className="space-y-3">
               <div className="flex items-center justify-between gap-2">
                 <p className="text-xs text-slate-300">
-                  Arquivo Batch para Windows caso precise executar em uma máquina Windows.
+                  Arquivo VBScript (.vbs) nativo para Windows — basta dar 2 cliques para executar.
                 </p>
                 <button
                   type="button"
                   onClick={handleDownloadWindows}
-                  className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center gap-1.5 border border-slate-700"
+                  className="px-3 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-xs font-semibold flex items-center gap-1.5"
                 >
                   <Download className="w-3.5 h-3.5" />
-                  <span>Baixar .BAT (Windows)</span>
+                  <span>Baixar .VBS (Windows)</span>
                 </button>
               </div>
             </div>

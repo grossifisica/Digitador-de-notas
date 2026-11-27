@@ -3,7 +3,6 @@ import {
   Plus, 
   Trash2, 
   ClipboardPaste, 
-  Sparkles, 
   HelpCircle,
   FileSpreadsheet,
   Eye,
@@ -19,7 +18,6 @@ interface GradeTableProps {
   onUpdateRow: (id: string, field: 'student' | 'grade', value: string) => void;
   onDeleteRow: (id: string) => void;
   onClearAll: () => void;
-  onLoadSample: () => void;
   onOpenPasteModal: () => void;
 }
 
@@ -29,7 +27,6 @@ export const GradeTable: React.FC<GradeTableProps> = ({
   onUpdateRow,
   onDeleteRow,
   onClearAll,
-  onLoadSample,
   onOpenPasteModal,
 }) => {
   const activeRowRef = useRef<HTMLTableRowElement | null>(null);
@@ -65,17 +62,6 @@ export const GradeTable: React.FC<GradeTableProps> = ({
             <ClipboardPaste className="w-3.5 h-3.5 text-indigo-400" />
             <span>Colar do Excel / Sheets</span>
           </button>
-
-          {grades.length === 0 && (
-            <button
-              type="button"
-              onClick={onLoadSample}
-              className="px-3.5 py-2 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-medium flex items-center gap-1.5 transition-all"
-            >
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Carregar Exemplo</span>
-            </button>
-          )}
 
           {grades.length > 0 && (
             <button
@@ -119,14 +105,6 @@ export const GradeTable: React.FC<GradeTableProps> = ({
               >
                 <ClipboardPaste className="w-4 h-4 text-indigo-400" />
                 <span>Colar em Bloco do Excel</span>
-              </button>
-              <button
-                type="button"
-                onClick={onLoadSample}
-                className="px-4 py-2 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-semibold flex items-center gap-2 transition-all"
-              >
-                <Sparkles className="w-4 h-4" />
-                <span>Carregar Exemplo</span>
               </button>
             </div>
           </div>

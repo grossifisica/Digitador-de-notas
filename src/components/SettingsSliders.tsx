@@ -88,8 +88,8 @@ export const SettingsSliders: React.FC<SettingsSlidersProps> = ({
               className="w-full accent-indigo-500 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed h-2 bg-slate-800 rounded-lg"
             />
             <div className="flex justify-between text-[11px] text-slate-500 mt-1 font-mono">
-              <span>0.1s</span>
-              <span className="text-indigo-400/80 font-semibold">Padrão: 2.0s</span>
+              <span className="text-indigo-400/80 font-semibold">0.1s (Padrão)</span>
+              <span>1.5s</span>
               <span>3.0s</span>
             </div>
           </div>
@@ -129,34 +129,6 @@ export const SettingsSliders: React.FC<SettingsSlidersProps> = ({
               <span>20 (Máx)</span>
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* Visual Sequence Guide */}
-      <div className="mt-4 pt-3 border-t border-slate-800/70 flex flex-wrap items-center gap-2 text-xs text-slate-400">
-        <span className="font-medium text-slate-300">Ciclo de Execução:</span>
-        <div className="flex items-center gap-1.5 flex-wrap">
-          <span className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20 font-mono">
-            1. Aguardar {settings.initialDelay}s
-          </span>
-          <span className="text-slate-600">➔</span>
-          <span className="px-2 py-0.5 rounded bg-sky-500/10 text-sky-300 border border-sky-500/20 font-mono">
-            2. Ctrl+C (Nota)
-          </span>
-          <span className="text-slate-600">➔</span>
-          <span className="px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 font-mono">
-            3. Ctrl+V (Colar)
-          </span>
-          <span className="text-slate-600">➔</span>
-          <span className="px-2 py-0.5 rounded bg-purple-500/10 text-purple-300 border border-purple-500/20 font-mono">
-            4. Esperar {Number(settings.typingInterval).toFixed(1)}s
-          </span>
-          <span className="text-slate-600">➔</span>
-          <span className="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 font-mono">
-            5. Pressionar TAB {settings.tabCount}x
-          </span>
-          <span className="text-slate-600">➔</span>
-          <span className="text-slate-400 italic">Repetir para a próxima linha</span>
         </div>
       </div>
     </div>
